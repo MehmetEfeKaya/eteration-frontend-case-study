@@ -1,73 +1,122 @@
-# React + TypeScript + Vite
+# Eteration Frontend Case Study
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Projeyi Visual Code Studio üzerinde geliştirdim. Kodun büyük kısmı tamamlandıktan sonra GitHub’a yükledim. Projede HTML, CSS, TypeScript ve React kullanıldı.
 
-Currently, two official plugins are available:
+## Kullanılan Teknolojiler
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- React (Vite)
+- TypeScript
+- React Router DOM
+- CSS
+- Fetch API
+- LocalStorage
 
-## React Compiler
+## Adım Adım Neler Yaptım
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+### 1) Tip Tanımları
+Projeye başladıktan sonra `types.ts` dosyasını oluşturdum. API yapısına uygun bir `Product` tipi yazdım. Sepet işlemleri için `CartItem` tipi (product + quantity) tanımladım.
 
-## Expanding the ESLint configuration
+### 2) ProductListPage
+Sayfa açıldığında:
+- API’den ürünlerin çekilmesi için `useEffect` kullandım.
+- Gelen veri `products` state’ine kaydedildi.
+Bu sayfa; arama, filtreleme, sıralama, pagination ve sepet özelliklerini içeriyor.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 3) ProductCard
+Her ürün için ayrı bir kart bileşeni oluşturdum. Kart içerisinde görsel, ürün bilgileri ve “Add to Cart” butonu yer alıyor. Bu bileşen props üzerinden aldığı ürünü UI’da gösteriyor.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 4) Grid Yapısı
+`product-grid` ile üç sütunlu bir yapı oluşturdum.  
+`products.map()` ile her ürün için ProductCard bileşeni oluşturularak grid içine yerleştirildi.
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### 5) Pagination
+12 ürünlük sayfalama kurdum.
+- `currentPage` state’ini 1’den başlattım.
+- `totalPages = ceil(products.length / 12)` olarak hesaplandı.
+- `paginatedProducts`, slice ile `(startIndex, endIndex)` şeklinde elde edildi.
+- Previous / Next butonları ile sayfa güncelleniyor.
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 6) Search
+Arama kutusu eklendi.
+- Arama boşsa → tüm ürünler
+- Arama doluysa → eşleşen ürünler  
+`filteredProducts` arama üzerinden filtreleniyor.  
+Pagination artık `filteredProducts` üzerinden çalışıyor.
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### 7) Brand Filtreleme
+Bir `selectedBrand` state’i ekledim.  
+`filteredProducts` artık hem arama hem brand filtresiyle belirleniyor.  
+“All brands” seçildiyse state boş kalıyor ve tüm ürünler gösteriliyor.  
+Radio butonlar HTML + CSS ile eklendi.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 8) Layout Yapısı
+Sol tarafta filtreler, ortada ürün listesi, sağda da sepet olacak şekilde bir layout oluşturdum.  
+`page-layout` üzerinde flex kullanıldı.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### 9) Price Sorting
+Bir `sortOption` state’i ekledim.  
+`sortedProducts`, önce filter’lanmış ürünler üzerinde çalışıyor.  
+- “price-asc”
+- “price-desc”
+Seçili değilse API’nin gelişi sırasını koruyor.
+
+### 10) Cart
+- `CartItem` tipi oluşturuldu.
+- `cartItems` state’i eklendi.
+- Ürün sepete eklenince quantity = 1 olarak ekleniyor.
+- Ürün zaten sepetteyse tekrar eklenmiyor; + ve - ile miktar değişiyor.
+- Quantity 0 olursa ürün listeden çıkarılıyor.
+- Total fiyat `reduce` ile hesaplandı.
+- Sepet ListPage ve DetailPage’de aynı yapıda gösteriliyor.
+
+### 11) LocalStorage ile Cart Saklama
+İki adet useEffect kullandım:
+1) Sayfa ilk açıldığında localStorage’daki sepeti alan useEffect  
+2) `cartItems` her değiştiğinde güncel sepeti localStorage’a yazan useEffect  
+JSON.stringify / JSON.parse kullanıldı.
+
+### 12) ProductDetailPage
+- React Router kuruldu.
+- `/products/:id` rotası oluşturuldu.
+- `useParams` ile URL’den id alındı.
+- `product` state’i Product | null olacak şekilde tanımlandı.
+- ID değiştikçe çalışan useEffect içinde API’den o ürün fetch edildi.
+- UI tarafında ürün resmi, adı, fiyatı, Add to Cart butonu ve açıklama gösterildi.
+- Sepet paneli bu sayfaya da taşındı.
+- Add to Cart butonunda `product &&` ile null kontrolü yapıldı.
+- Back butonu ile “/” sayfasına dönüş eklendi.
+- Ürün adının ProductListPage'de Link ile detail sayfasına yönlendirilmesi sağlandı.
+
+## Pipeline
+
+API → Products  
+Products → (search & brand filter) → Filtered Products  
+Filtered Products → (sortOption) → Sorted Products  
+Sorted Products → (slice) → Paginated Products  
+Paginated Products → (grid + map) → UI
+
+## Özellikler
+
+- Sayfalama (Pagination)
+- Arama
+- Brand Filtreleme
+- Fiyat Sıralama
+- Ürün Detay Sayfası
+- Sepete Ürün Ekleme
+- Miktar Arttırma / Azaltma
+- Miktar 0 olunca ürünün silinmesi
+- LocalStorage ile sepeti saklama
+- Responsive tasarım
+
+## Screenshots
+
+> Aşağıdaki örnek ekran görüntüleri proje için referans amaçlıdır.
+
+### Product List Page
+![Product List](screenshots/product-list.png)
+
+### Product Detail Page
+![Product Detail](screenshots/product-detail.png)
+
+### Cart Panel
+![Cart](screenshots/cart.png)
