@@ -110,13 +110,10 @@ Paginated Products → (grid + map) → UI
 
 ## Screenshots
 
-> Aşağıdaki örnek ekran görüntüleri proje için referans amaçlıdır.
-
 ### Product List Page
-![Product List](screenshots/product-list.png)
+<img width="2547" height="1631" alt="image" src="https://github.com/user-attachments/assets/b4c49f08-6a42-4995-b204-37ec659d4cdd" />
+
 
 ### Product Detail Page
-![Product Detail](screenshots/product-detail.png)
+<img width="2535" height="1325" alt="image" src="https://github.com/user-attachments/assets/75bdd37e-3c9b-40a0-b08e-a3ce5d46d2ec" />
 
-### Cart Panel
-![Cart](screenshots/cart.png)
