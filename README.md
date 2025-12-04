@@ -90,3 +90,36 @@ Paginated Products → (grid + map) → UI
 <img width="2591" height="1621" alt="image" src="https://github.com/user-attachments/assets/80a95921-7a40-4d9b-85e5-72f9c4980a26" />
 
 
+### Unit Test
+1) FilterAndSortProducts.ts’i oluşturdum ve buraya ProductListPage’de kullandığım search, brand ve sort mantıklarının aynısının olduğu bir fonksiyon yazdım.  
+   Products önce search fonksiyonuna giriyor, oradan çıkan sonuç brand’e, en son sort işlemine gidiyor olacak şekilde; parametre olarak bir config objesi alan birleşik bir fonksiyon yazdım.
+
+2) Vitest test ortamını kurdum ve package.json içine test script’ini ekledim.
+
+3) filterAndSortProducts.test.ts dosyasını oluşturdum.  
+   İçine 4 tane mock product ekledim:  
+   - 3’ünün markaları aynı,  
+   - 2’sinin isimleri birbirine yakın,  
+   - Diğer ürün hem marka hem isim olarak farklı.  
+   Ardından şu testleri yazdım:
+
+   - [ ] FilterAndSortParams içinde sadece searchQuery verilen ve **1 ürün** beklenen test  
+   - [ ] FilterAndSortParams içinde sadece brand verilen ve **3 ürün** beklenen test  
+   - [ ] FilterAndSortParams içinde sadece sortOption verilen ve doğru sırada **4 ürün** beklenen **2 test**  
+         (biri düşükten yükseğe, diğeri yükseğe–düşük)  
+   - [ ] Tüm parametrelerin birlikte verildiği; benzer isimli ikilinin search’ten geçtiği, aynı brand filtresini sağladığı ve doğru sıralandığı test
+
+4) cartUtils.ts dosyasını oluşturdum ve içine ProductListPage’de kullandığım addToCart, increaseQuantity ve decreaseQuantity fonksiyonlarını ekledim.
+
+5) cartUtils.test.ts dosyasını oluşturdum ve aşağıdaki testleri yazdım:
+
+   - [ ] Cart’ta ürün yokken ürün ekleniyor  
+   - [ ] Cart’ta ürün varken aynı ürün tekrar eklenmeye çalışılıyor (eklenmiyor)  
+   - [ ] Cart’ta ürün yokken o ürünün quantity’si arttırılmaya çalışılıyor (arttırılamıyor)  
+   - [ ] Cart’ta ürün varken quantity arttırılıyor  
+   - [ ] Cart’ta quantity değeri 2 olan bir üründe decrease çağrılınca quantity 1 oluyor  
+   - [ ] Cart’ta quantity değeri 1 olan bir üründe decrease çağrılınca quantity 0 olup ürün cart’tan siliniyor
+
+6) npm test ile unit testleri çalıştırdım ve sonuç olarak **test files: 2 passed**, **tests: 11 passed** çıktısını aldım; tüm testler başarıyla geçti.
+<img width="1245" height="217" alt="image" src="https://github.com/user-attachments/assets/04293b4c-cbab-47e1-a5e7-4873d176423e" />
+
