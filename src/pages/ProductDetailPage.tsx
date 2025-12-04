@@ -14,15 +14,13 @@ function ProductDetailPage() {
     (sum, item) => sum + item.quantity * item.product.price,
     0
   );
-    const handleAddToCart = (product: Product) => {
-    setCartItems((prevCart) => {
-      const exists = prevCart.some(
-        (item) => item.product.id === product.id
-      );
+    const handleAddToCart = (product: Product) => { //product alıyor prev cart hesaplıyor ve onu setCartItemse veriyor
+    setCartItems((prevCart) => { 
+      const exists = prevCart.some((item) => item.product.id === product.id); //ürün zaten stepette var mı?
       if (exists) {
-        return prevCart;
+        return prevCart; //varsa eski cardı döndür 
       }
-      return [...prevCart, { product, quantity: 1 }];
+      return [...prevCart, { product, quantity: 1 }]; //yoksa eski cartın üstüne productı quantity 1 olarak ekle 
     });
   };
 
@@ -30,7 +28,7 @@ function ProductDetailPage() {
     setCartItems((prevCart) =>
       prevCart.map((item) =>
         item.product.id === productId
-          ? { ...item, quantity: item.quantity + 1 }
+          ? { ...item, quantity: item.quantity + 1 } //item'in kopyasını oluştur ve quantity değiştir böylece state'e dokunmamış oluruz
           : item
       )
     );
@@ -41,7 +39,7 @@ function ProductDetailPage() {
       prevCart
         .map((item) =>
           item.product.id === productId
-            ? { ...item, quantity: item.quantity - 1 }
+            ? { ...item, quantity: item.quantity - 1 } //yeni o id. elemanı dön item olarak prevcartac
             : item
         )
         .filter((item) => item.quantity > 0)
